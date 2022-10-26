@@ -1,52 +1,59 @@
 {
-  "name": "@kongwang/vue-query-builder-plus",
-  "version": "1.0.2",
-  "description": "VueQueryBuilder is an UI component to create queries and filters. refer to https://querybuilder.js.org/index.html and https://dabernathy89.github.io/vue-query-builder/",
-  "main": "./dist/VueQueryBuilder.min.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config ./webpack.config.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kongwang/vue-query-builder-plus.git"
-  },
-  "keywords": [
-    "vue",
-    "query",
-    "filter",
-    "querybuilder"
-  ],
-  "author": "kong wang <kongwang520@126.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "css-loader": "^0.28.7",
-    "es6-promise": "^4.1.1",
-    "less": "^2.7.3",
-    "less-loader": "^4.0.5",
-    "style-loader": "^0.19.0",
-    "url-loader": "^0.6.2",
-    "vue": "^2.5.9",
-    "vue-hot-reload-api": "^2.2.4",
-    "vue-html-loader": "^1.2.4",
-    "vue-loader": "^13.5.0",
-    "vue-router": "^3.0.1",
-    "vue-style-loader": "^3.0.3",
-    "vue-template-compiler": "^2.5.9",
-    "vuex": "^3.0.1",
-    "webpack": "^3.9.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^2.9.5"
-  },
-  "bugs": {
-    "url": "https://github.com/kongwang/vue-query-builder-plus/issues"
-  },
-  "homepage": "https://github.com/kongwang/vue-query-builder-plus#readme",
-  "dependencies": {}
+	"name": "vue-query-builder-plus",
+	"version": "1.0.2",
+	"description": "VueQueryBuilder is an UI component to create queries and filters. refer to https://querybuilder.js.org/index.html and https://dabernathy89.github.io/vue-query-builder/",
+	"main": "./src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "webpack --config ./webpack.config.js",
+		"dev": "webpack-dev-server --open --hot --port 3000 --config ./webpack.dev.js",
+		"lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix",
+		"format": "prettier --write ./**/*.{vue,js,json,css,md} ./**/**/*.{vue,js,json,md}"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kongwang/vue-query-builder-plus.git"
+	},
+	"keywords": [
+		"vue",
+		"query",
+		"filter",
+		"querybuilder"
+	],
+	"author": "kong wang <kongwang520@126.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"@vue/eslint-config-prettier": "^7.0.0",
+		"babel-core": "^6.26.0",
+		"babel-loader": "^7.1.2",
+		"babel-plugin-transform-object-rest-spread": "^6.26.0",
+		"babel-plugin-transform-runtime": "^6.23.0",
+		"babel-polyfill": "^6.26.0",
+		"babel-preset-es2015": "^6.24.1",
+		"css-loader": "^0.28.7",
+		"es6-promise": "^4.1.1",
+		"eslint": "^8.26.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier-vue": "^4.2.0",
+		"eslint-plugin-vue": "^9.6.0",
+		"less": "^2.7.3",
+		"less-loader": "^4.0.5",
+		"style-loader": "^0.19.0",
+		"url-loader": "^0.6.2",
+		"vue": "^2.5.9",
+		"vue-hot-reload-api": "^2.2.4",
+		"vue-html-loader": "^1.2.4",
+		"vue-loader": "^13.5.0",
+		"vue-router": "^3.0.1",
+		"vue-style-loader": "^3.0.3",
+		"vue-template-compiler": "^2.5.9",
+		"vuex": "^3.0.1",
+		"webpack": "^3.9.1",
+		"webpack-cli": "^3.1.0",
+		"webpack-dev-server": "^2.9.5"
+	},
+	"bugs": {
+		"url": "https://github.com/kongwang/vue-query-builder-plus/issues"
+	},
+	"homepage": "https://github.com/kongwang/vue-query-builder-plus#readme"
 }
