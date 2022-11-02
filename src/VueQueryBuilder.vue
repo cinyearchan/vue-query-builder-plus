@@ -44,6 +44,7 @@ export default {
 				condition: 'AND',
 				rules: []
 			},
+			// ruleTypes 这个组件内部预定义的查询字段类型对应的操作符的数据，根本没有用到！真正用到的应该是 constants.js 里定义的 operators
 			ruleTypes: {
 				text: {
 					operators: [
