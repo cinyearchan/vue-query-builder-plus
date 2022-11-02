@@ -1,5 +1,6 @@
 {
 	"cSpell.words": [
+		"datetime",
 		"glyphicons",
 		"GREATTHAN",
 		"GREATTHANEQUALS",
@@ -8,6 +9,10 @@
 		"LESSTHAN",
 		"LESSTHANEQUALS",
 		"NOTEQUALS",
-		"Parens"
+		"oprop",
+		"optgroups",
+		"Parens",
+		"sqlparser",
+		"sqlrl"
 	]
 }

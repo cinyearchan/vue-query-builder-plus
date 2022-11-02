@@ -3,32 +3,27 @@
 		<div class="rule-content-container">
 			<div class="rule-filter-container">
 				<!-- 主规则 -->
-				<el-select v-model="selectedRule" size="small" @change="ruleChange">
-					<el-option
-						v-for="r in rules"
-						:key="r.id"
-						:label="r.label"
-						:value="r.id"
-					></el-option>
-				</el-select>
-				<!-- 副规则 -->
 				<el-select
-					v-if="subRules !== null && subRules.length > 0"
-					v-model="selectedSubRule"
+					v-model="innerQuery.rule"
 					size="small"
-					@change="subRuleChange"
+					style="width: 120px"
+					@change="ruleChange"
 				>
 					<el-option
-						v-for="r in subRules"
-						:key="r.id"
-						:label="r.label"
-						:value="r.id"
+						v-for="rule in rules"
+						:key="rule.id"
+						:label="rule.label"
+						:value="rule.id"
 					></el-option>
 				</el-select>
 			</div>
 			<!-- 操作符 大于 小于 等于 等等 -->
 			<div class="rule-operator-container">
-				<el-select v-model="query.selectedOperator" size="small">
+				<el-select
+					v-model="innerQuery.operator"
+					size="small"
+					style="width: 100px"
+				>
 					<el-option
 						v-for="operator in selectedRuleObj.operators"
 						:key="operator.value"
@@ -42,45 +37,44 @@
 			<div class="rule-value-container">
 				<el-input
 					v-if="selectedRuleObj.inputType === 'text'"
-					v-model="query.value"
+					v-model="innerQuery.value"
 					type="text"
 					clearable
 				/>
 				<el-input-number
 					v-if="selectedRuleObj.inputType === 'number'"
-					v-model="query.value"
+					v-model="innerQuery.value"
 				></el-input-number>
 				<el-date-picker
 					v-if="
 						selectedRuleObj.inputType === 'date' ||
 						selectedRuleObj.inputType === 'datetime'
 					"
-					v-model="query.value"
+					v-model="innerQuery.value"
 					value-format="timestamp"
 					:editable="false"
 					:type="selectedRuleObj.inputType"
 				/>
 				<el-checkbox-group
 					v-if="selectedRuleObj.inputType === 'checkbox'"
-					v-model="query.value"
+					v-model="innerQuery.value"
 				>
 					<el-checkbox
 						v-for="choice in selectedRuleObj.choices"
 						:key="choice"
 						:label="choice"
-						:value="choice"
 					>
+						{{ choice }}
 					</el-checkbox>
 				</el-checkbox-group>
 				<el-radio-group
 					v-if="selectedRuleObj.inputType === 'radio'"
-					v-model="query.value"
+					v-model="innerQuery.value"
 				>
 					<el-radio
 						v-for="choice in selectedRuleObj.choices"
 						:key="choice"
 						:label="choice"
-						:value="choice"
 					>
 					</el-radio>
 				</el-radio-group>
@@ -103,116 +97,110 @@
 
 <script>
 import deepClone from '../utils/deepClone.js'
+// import _ from 'lodash'
 
 export default {
 	name: 'QueryBuilderRule',
 
-	props: ['query', 'index', 'rules'],
+	props: [
+		'query',
+		'index',
+		'rules' // rules 是从系统顶部传入的总 rules
+	],
 
 	data() {
 		return {
-			selectedRuleObj: this.rules[0],
-			selectedRule: this.query.rule || this.rules[0].id,
-			selectedSubRule: null,
-			subRules: []
+			innerQuery: {
+				dataType: null,
+				operator: '',
+				rule: '', // 查询字段
+				value: null
+			},
+			// 选中的、当前操作符规则对象
+			selectedRuleObj: this.rules[0]
 		}
 	},
 
+	watch: {
+		// query(val, oldVal) {
+		// 	if (val.rule === 'radio') {
+		// 		console.log('query', val, oldVal)
+		// 	}
+		// }
+		'innerQuery.value'() {
+			this.$emit('update:query', this.innerQuery)
+		}
+	},
 	mounted() {
 		// Set a default value for these types if one isn't provided already
+		// 初始化
 		this.initValue()
-
-		var _this = this
-		var selectedRuleCopy = _this.selectedRule
-		var splitIndex = selectedRuleCopy.indexOf('-')
-		if (splitIndex > -1) {
-			_this.selectedRule = selectedRuleCopy.substring(0, splitIndex)
-			_this.selectedSubRule = selectedRuleCopy.substring(splitIndex + 1)
-			this.rules.forEach(function (rule) {
-				if (rule.id === _this.selectedRule) {
-					var isBreak = false
-					_this.subRules = rule.subRules
-					rule.subRules.forEach(function (subRule) {
-						if (subRule.id === _this.selectedSubRule) {
-							_this.selectedRuleObj = subRule
-							isBreak = true
-							return false
-						}
-					})
-					if (isBreak) {
-						return false
-					}
-				}
-			})
-		} else {
-			this.rules.forEach(function (rule) {
-				if (rule.id === _this.selectedRule) {
-					_this.selectedRuleObj = rule
-					return false
-				}
-			})
-		}
+		this.initOperatorSelector()
 	},
 	methods: {
-		remove: function () {
+		initOperatorSelector() {
+			this.selectedRuleObj = this.rules.filter(
+				rule => rule.id === this.innerQuery.rule
+			)[0]
+		},
+		remove() {
 			this.$emit('child-deletion-requested', this.index)
 		},
-		ruleChange: function () {
-			const _this = this
-			this.query.value = null
-			this.subRules = []
-			this.selectedSubRule = null
-			this.rules.forEach(function (value) {
-				if (value.id === _this.selectedRule) {
-					if (
-						value.subRules !== undefined &&
-						value.subRules !== null &&
-						value.subRules.length > 0
-					) {
-						_this.subRules = value.subRules
-					} else {
-						_this.selectedRuleObj = value
-						_this.query.rule = _this.selectedRule
-						_this.initValue()
-					}
-				}
-			})
-			this.query.selectedOperator = this.selectedRuleObj.operators[0].value
+		// 主规则变化
+		// 查询字段发生变化
+		ruleChange(rule) {
+			// console.log('changedRule', rule)
+			// 更新查询字段
+			this.innerQuery.rule = rule
+
+			// console.log('innerQuery', this.innerQuery)
+
+			// 更新查询字段对应默认值
+			this.innerQuery.value = null
+			if (this.innerQuery.rule === 'checkbox') {
+				this.innerQuery.value = []
+			}
+
+			this.initOperatorSelector()
+
+			// 更新查询操作符
+			this.innerQuery.operator = this.selectedRuleObj.operators[0].value
+
+			this.$emit('update:query', this.innerQuery)
+
+			this.initValue()
 		},
-		subRuleChange: function () {
-			const _this = this
-			this.query.value = null
-			this.subRules.forEach(function (value) {
-				if (value.id === _this.selectedSubRule) {
-					_this.selectedRuleObj = value
-					_this.query.selectedOperator =
-						_this.selectedRuleObj.operators[0].value
-					_this.query.rule = _this.selectedRule + '-' + _this.selectedSubRule
-					_this.initValue()
-				}
-			})
+		setInnerQuery(source) {
+			this.innerQuery.dataType = source.dataType
+			this.innerQuery.rule = source.rule
+			this.innerQuery.operator = source.operator
+			this.innerQuery.value = source.value
 		},
 		initValue() {
-			this.query.dateType = this.selectedRuleObj.dateType
+			// this.query.dataType = this.selectedRuleObj.dataType
+			const clone = deepClone(this.query)
+			this.setInnerQuery(clone)
+			// clone.dataType = this.selectedRuleObj.dataType
+			// this.$emit('update:query', clone)
 			if (this.query.value === null) {
-				const updated_query = deepClone(this.query)
+				// const updated_query = deepClone(this.query)
 				if (this.selectedRuleObj.inputType === 'checkbox') {
-					updated_query.value = []
+					this.innerQuery.value = []
 				}
 				if (
 					this.selectedRuleObj.inputType === 'select' ||
 					this.selectedRuleObj.inputType === 'radio'
 				) {
-					updated_query.value = this.selectedRuleObj.choices[0]
+					this.innerQuery.value = this.selectedRuleObj.choices[0]
 				}
 				if (
 					this.selectedRuleObj.inputType === 'time' ||
 					this.selectedRuleObj.inputType === 'date' ||
 					this.selectedRuleObj.inputType === 'datetime'
 				) {
-					updated_query.value = Math.round(new Date())
+					this.innerQuery.value = Math.round(new Date())
 				}
-				this.$emit('update:query', deepClone(updated_query))
+				this.$emit('update:query', this.innerQuery)
 			}
 		}
 	}

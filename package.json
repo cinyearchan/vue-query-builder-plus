@@ -55,5 +55,9 @@
 	"bugs": {
 		"url": "https://github.com/kongwang/vue-query-builder-plus/issues"
 	},
-	"homepage": "https://github.com/kongwang/vue-query-builder-plus#readme"
+	"homepage": "https://github.com/kongwang/vue-query-builder-plus#readme",
+	"dependencies": {
+		"lodash": "^4.17.21",
+		"sql-parser-mistic": "^1.2.3"
+	}
 }

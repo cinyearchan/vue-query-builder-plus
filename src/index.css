@@ -25,9 +25,9 @@
 }
 
 .query-builder .rule-container {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
 }
 
 .rule-container .rule-content-container {
@@ -37,15 +37,15 @@
 .query-builder .rules-group-container {
 	padding: 10px;
 	padding-bottom: 6px;
-	border: 1px solid #dcc896;
-	background: rgba(250, 240, 210, 0.5);
+	border: 1px solid #afc7fb;
+	background: rgba(181, 220, 255, 0.5);
 }
 
 .query-builder .rules-group-header {
 	margin-bottom: 10px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
 }
 
 .query-builder .rules-group-header .group-conditions .btn.readonly:not(.active),

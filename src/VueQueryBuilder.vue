@@ -15,6 +15,8 @@
 <script>
 import QueryBuilderGroup from './components/QueryBuilderGroup.vue'
 import deepClone from './utils/deepClone.js'
+import { getSQL } from './utils/getSQL'
+import { getRulesFromSQL } from './utils/getRulesFromSQL'
 
 export default {
 	name: 'VueQueryBuilder',
@@ -24,7 +26,7 @@ export default {
 	},
 
 	props: {
-		rules: Array,
+		rules: Array, // 汇总的查询字段
 		maxDepth: {
 			type: Number,
 			default: 3,
@@ -45,10 +47,10 @@ export default {
 			ruleTypes: {
 				text: {
 					operators: [
-						{ label: '等于', value: 'EQUALS' },
-						{ label: '不等于', value: 'NOTEQUALS' },
-						{ label: '包含于', value: 'IN' },
-						{ label: '不包含于', value: 'NOTIN' }
+						{ label: '等于', value: 'equal' },
+						{ label: '不等于', value: 'not_equal' },
+						{ label: '包含于', value: 'in' },
+						{ label: '不包含于', value: 'not_in' }
 					],
 					inputType: 'text',
 					id: 'text-field',
@@ -56,12 +58,12 @@ export default {
 				},
 				numeric: {
 					operators: [
-						{ label: '等于', value: 'EQUALS' },
-						{ label: '大于', value: 'GREATTHAN' },
-						{ label: '小于', value: 'LESSTHAN' },
-						{ label: '大于等于', value: 'GREATTHANEQUALS' },
-						{ label: '小于等于', value: 'LESSTHANEQUALS' },
-						{ label: '不等于', value: 'NOTEQUALS' }
+						{ label: '等于', value: 'equal' },
+						{ label: '大于', value: 'greater' },
+						{ label: '小于', value: 'less' },
+						{ label: '大于等于', value: 'greater_or_equal' },
+						{ label: '小于等于', value: 'less_or_equal' },
+						{ label: '不等于', value: 'not_equal' }
 					],
 					inputType: 'number',
 					id: 'number-field',
@@ -69,12 +71,12 @@ export default {
 				},
 				date: {
 					operators: [
-						{ label: '等于', value: 'EQUALS' },
-						{ label: '大于', value: 'GREATTHAN' },
-						{ label: '小于', value: 'LESSTHAN' },
-						{ label: '大于等于', value: 'GREATTHANEQUALS' },
-						{ label: '小于等于', value: 'LESSTHANEQUALS' },
-						{ label: '不等于', value: 'NOTEQUALS' }
+						{ label: '等于', value: 'equal' },
+						{ label: '大于', value: 'greater' },
+						{ label: '小于', value: 'less' },
+						{ label: '大于等于', value: 'greater_or_equal' },
+						{ label: '小于等于', value: 'less_or_equal' },
+						{ label: '不等于', value: 'not_equal' }
 					],
 					inputType: 'date',
 					id: 'date-field',
@@ -82,12 +84,12 @@ export default {
 				},
 				datetime: {
 					operators: [
-						{ label: '等于', value: 'EQUALS' },
-						{ label: '大于', value: 'GREATTHAN' },
-						{ label: '小于', value: 'LESSTHAN' },
-						{ label: '大于等于', value: 'GREATTHANEQUALS' },
-						{ label: '小于等于', value: 'LESSTHANEQUALS' },
-						{ label: '不等于', value: 'NOTEQUALS' }
+						{ label: '等于', value: 'equal' },
+						{ label: '大于', value: 'greater' },
+						{ label: '小于', value: 'less' },
+						{ label: '大于等于', value: 'greater_or_equal' },
+						{ label: '小于等于', value: 'less_or_equal' },
+						{ label: '不等于', value: 'not_equal' }
 					],
 					inputType: 'datetime',
 					id: 'datetime-field',
@@ -95,8 +97,8 @@ export default {
 				},
 				radio: {
 					operators: [
-						{ label: '等于', value: 'EQUALS' },
-						{ label: '不等于', value: 'NOTEQUALS' }
+						{ label: '等于', value: 'equal' },
+						{ label: '不等于', value: 'not_equal' }
 					],
 					choices: [],
 					inputType: 'radio',
@@ -105,10 +107,10 @@ export default {
 				},
 				checkbox: {
 					operators: [
-						{ label: '等于', value: 'EQUALS' },
-						{ label: '不等于', value: 'NOTEQUALS' },
-						{ label: '包含于', value: 'IN' },
-						{ label: '不包含于', value: 'NOTIN' }
+						{ label: '等于', value: 'equal' },
+						{ label: '不等于', value: 'not_equal' },
+						{ label: '包含于', value: 'in' },
+						{ label: '不包含于', value: 'not_in' }
 					],
 					choices: [],
 					inputType: 'checkbox',
@@ -117,8 +119,8 @@ export default {
 				},
 				select: {
 					operators: [
-						{ label: '等于', value: 'EQUALS' },
-						{ label: '不等于', value: 'NOTEQUALS' }
+						{ label: '等于', value: 'equal' },
+						{ label: '不等于', value: 'not_equal' }
 					],
 					choices: [],
 					inputType: 'select',
@@ -182,6 +184,18 @@ export default {
 		},
 		getResult() {
 			console.log('query', this.query)
+		},
+		getSql() {
+			let result = getSQL(false, false, deepClone(this.query))
+			console.log('sql', result)
+			return [this.query, result]
+		},
+		setSql(sql) {
+			if (sql) {
+				let result = getRulesFromSQL(sql, false, this.rules)
+				console.log('result', result)
+				this.query = result
+			}
 		}
 	}
 }
